@@ -1,0 +1,17 @@
+name: beaupeyratheque_server
+description: Simple Shelf + SQLite backend for Beaupeyratheque mobile app
+version: 0.1.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  dart_jsonwebtoken: ^2.14.0
+  path: ^1.9.0
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  sqlite3: ^2.4.2
+
+dev_dependencies:
+  lints: ^3.0.0
