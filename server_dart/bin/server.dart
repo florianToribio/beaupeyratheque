@@ -5,12 +5,32 @@ import 'package:beaupeyratheque_server/src/database.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 
+Middleware corsHeaders() {
+  final corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
+  };
+
+  return (handler) => (request) async {
+    if (request.method == 'OPTIONS') {
+      return Response.ok('', headers: corsHeaders);
+    }
+
+    final response = await handler(request);
+    return response.change(headers: corsHeaders);
+  };
+}
+
 Future<void> main(List<String> args) async {
   final db = DatabaseManager();
   await db.init();
 
   final api = ApiHandlers(db);
-  final handler = const Pipeline().addMiddleware(logRequests()).addHandler(api.router.call);
+  final handler = const Pipeline()
+      .addMiddleware(corsHeaders())
+      .addMiddleware(logRequests())
+      .addHandler(api.router.call);
 
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
   final server = await serve(handler, InternetAddress.anyIPv4, port);
