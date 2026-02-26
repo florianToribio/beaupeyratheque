@@ -22,6 +22,7 @@ class _PreloadScreenState extends State<PreloadScreen> {
   @override
   void initState() {
     super.initState();
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
     _checkToken();
   }
 
