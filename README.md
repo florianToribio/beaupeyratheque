@@ -1,4 +1,5 @@
 # Beaupeyratheque Mobile
+Flutter: 3.32.8 (channel stable)
 
 > 📚 **Projet pédagogique** : Application mobile Flutter pour gérer une bibliothèque.
 > Code commenté pour servir d'exemple aux étudiants.
