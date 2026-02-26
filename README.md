@@ -1,3 +1,4 @@
+<!-- Projet gere par Codex -->
 # Beaupeyratheque Mobile
 
 > 📚 **Projet pédagogique** : Application mobile Flutter pour gérer une bibliothèque.
