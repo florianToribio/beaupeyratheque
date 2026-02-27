@@ -45,6 +45,7 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
       id: widget.author?.id ?? 0,
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
+      email: widget.author?.email ?? '',
       nationality: _nationalityController.text.trim().isEmpty ? null : _nationalityController.text.trim(),
       birthDate: _selectedDate,
       biography: _biographyController.text.trim().isEmpty ? null : _biographyController.text.trim(),

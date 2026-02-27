@@ -3,6 +3,7 @@ class Author {
     required this.id,
     required this.firstName,
     required this.lastName,
+    required this.email,
     this.birthDate,
     this.nationality,
     this.biography,
@@ -13,6 +14,7 @@ class Author {
       id: json['id'] as int,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
+      email: json['email'] as String,
       birthDate: json['birthDate'] != null ? DateTime.parse(json['birthDate'] as String) : null,
       nationality: json['nationality'] as String?,
       biography: json['biography'] as String?,
@@ -22,6 +24,7 @@ class Author {
   final int id;
   final String firstName;
   final String lastName;
+  final String email;
   final DateTime? birthDate;
   final String? nationality;
   final String? biography;
@@ -30,6 +33,7 @@ class Author {
     return {
       'firstName': firstName,
       'lastName': lastName,
+      'email': email,
       'birthDate': birthDate?.toIso8601String(),
       'nationality': nationality,
       'biography': biography,
