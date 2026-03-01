@@ -10,11 +10,12 @@ class Author {
   });
 
   factory Author.fromJson(Map<String, dynamic> json) {
+    final email = (json['email'] as String?)?.trim();
     return Author(
       id: json['id'] as int,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      email: json['email'] as String?,
+      email: (email == null || email.isEmpty) ? null : email,
       birthDate: json['birthDate'] != null ? DateTime.parse(json['birthDate'] as String) : null,
       nationality: json['nationality'] as String?,
       biography: json['biography'] as String?,

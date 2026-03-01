@@ -10,6 +10,8 @@ class _AuthorFormDialog extends StatefulWidget {
 }
 
 class _AuthorFormDialogState extends State<_AuthorFormDialog> {
+  static final RegExp _emailRegex = RegExp(r"^[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}$", caseSensitive: false);
+
   final _formKey = GlobalKey<FormState>();
   late final _firstNameController = TextEditingController(text: widget.author?.firstName ?? '');
   late final _lastNameController = TextEditingController(text: widget.author?.lastName ?? '');
@@ -42,12 +44,13 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    final normalizedEmail = _normalizeEmail(_emailController.text);
 
     final author = Author(
       id: widget.author?.id ?? 0,
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
-      email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
+      email: normalizedEmail,
       nationality: _nationalityController.text.trim().isEmpty ? null : _nationalityController.text.trim(),
       birthDate: _selectedDate,
       biography: _biographyController.text.trim().isEmpty ? null : _biographyController.text.trim(),
@@ -92,9 +95,12 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                autocorrect: false,
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) return null;
-                  return value.contains('@') ? null : 'Email invalide';
+                  final normalized = _normalizeEmail(value);
+                  if (normalized == null) return null;
+                  return _emailRegex.hasMatch(normalized) ? null : 'Email invalide';
                 },
               ),
               TextFormField(
@@ -148,5 +154,11 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
         _birthDateController.text = picked.toIso8601String().split('T').first;
       });
     }
+  }
+
+  String? _normalizeEmail(String? value) {
+    final normalized = value?.trim();
+    if (normalized == null || normalized.isEmpty) return null;
+    return normalized;
   }
 }
