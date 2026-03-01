@@ -10,7 +10,7 @@ class _AuthorFormDialog extends StatefulWidget {
 }
 
 class _AuthorFormDialogState extends State<_AuthorFormDialog> {
-  static final RegExp _emailRegex = RegExp(r"^[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}$", caseSensitive: false);
+  static final RegExp _emailRegex = RegExp(r'^[^\s@]+@[^\s@]+$');
 
   final _formKey = GlobalKey<FormState>();
   late final _firstNameController = TextEditingController(text: widget.author?.firstName ?? '');
@@ -96,6 +96,7 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
                 decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                textCapitalization: TextCapitalization.none,
                 autocorrect: false,
                 validator: (value) {
                   final normalized = _normalizeEmail(value);
