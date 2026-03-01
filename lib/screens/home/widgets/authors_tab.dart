@@ -132,6 +132,7 @@ class _AuthorTile extends StatelessWidget {
   Widget build(BuildContext context) {
     // Construction du sous-titre avec les informations disponibles
     final details = <String>[
+      if (author.email != null && author.email!.isNotEmpty) 'Email : ${author.email}',
       if (author.nationality != null && author.nationality!.isNotEmpty) 'Nationalité : ${author.nationality}',
       if (author.birthDate != null) 'Né(e) le ${author.birthDate!.toFormattedString()}',
     ].join('\n');

@@ -16,6 +16,7 @@ class _AuthorDetailsDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Affichage conditionnel des informations si elles existent
+          if (author.email != null && author.email!.isNotEmpty) Text('Email : ${author.email}'),
           if (author.nationality != null) Text('Nationalité : ${author.nationality}'),
           if (author.birthDate != null) Text('Naissance : ${author.birthDate!.toFormattedString()}'),
           if (author.biography != null && author.biography!.isNotEmpty) ...[

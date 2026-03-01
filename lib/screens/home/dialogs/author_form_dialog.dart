@@ -13,6 +13,7 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
   final _formKey = GlobalKey<FormState>();
   late final _firstNameController = TextEditingController(text: widget.author?.firstName ?? '');
   late final _lastNameController = TextEditingController(text: widget.author?.lastName ?? '');
+  late final _emailController = TextEditingController(text: widget.author?.email ?? '');
   late final _nationalityController = TextEditingController(text: widget.author?.nationality ?? '');
   late final _birthDateController = TextEditingController(
     text: widget.author?.birthDate != null ? widget.author!.birthDate!.toIso8601String().split('T').first : '',
@@ -32,6 +33,7 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _emailController.dispose();
     _nationalityController.dispose();
     _birthDateController.dispose();
     _biographyController.dispose();
@@ -45,6 +47,7 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
       id: widget.author?.id ?? 0,
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
+      email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
       nationality: _nationalityController.text.trim().isEmpty ? null : _nationalityController.text.trim(),
       birthDate: _selectedDate,
       biography: _biographyController.text.trim().isEmpty ? null : _biographyController.text.trim(),
@@ -84,6 +87,15 @@ class _AuthorFormDialogState extends State<_AuthorFormDialog> {
                 controller: _lastNameController,
                 decoration: const InputDecoration(labelText: 'Nom *'),
                 validator: (value) => (value == null || value.trim().isEmpty) ? 'Champ obligatoire' : null,
+              ),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) return null;
+                  return value.contains('@') ? null : 'Email invalide';
+                },
               ),
               TextFormField(
                 controller: _nationalityController,

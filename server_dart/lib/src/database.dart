@@ -48,6 +48,7 @@ class DatabaseManager {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
+        email TEXT,
         birth_date TEXT,
         nationality TEXT,
         biography TEXT
@@ -71,6 +72,7 @@ class DatabaseManager {
 
     // Vérifier et ajouter les colonnes manquantes (migration incrémentale)
     _ensureBookColumns();
+    _ensureAuthorColumns();
   }
 
   /// Insère des données initiales de test (seeding)
@@ -83,15 +85,22 @@ class DatabaseManager {
       _db
         ..execute(
           '''
-INSERT INTO authors (first_name, last_name, birth_date, nationality, biography)
-           VALUES (?, ?, ?, ?, ?)''',
-          ['Jules', 'Verne', '1828-02-08', 'Française', 'Pionnier du roman de science-fiction.'],
+INSERT INTO authors (first_name, last_name, email, birth_date, nationality, biography)
+           VALUES (?, ?, ?, ?, ?, ?)''',
+          ['Jules', 'Verne', 'jules.verne@example.com', '1828-02-08', 'Française', 'Pionnier du roman de science-fiction.'],
         )
         ..execute(
           '''
-INSERT INTO authors (first_name, last_name, birth_date, nationality, biography)
-           VALUES (?, ?, ?, ?, ?)''',
-          ['George', 'Orwell', '1903-06-25', 'Britannique', 'Auteur de 1984 et La Ferme des Animaux.'],
+INSERT INTO authors (first_name, last_name, email, birth_date, nationality, biography)
+           VALUES (?, ?, ?, ?, ?, ?)''',
+          [
+            'George',
+            'Orwell',
+            'george.orwell@example.com',
+            '1903-06-25',
+            'Britannique',
+            'Auteur de 1984 et La Ferme des Animaux.',
+          ],
         );
     }
 
@@ -167,14 +176,14 @@ INSERT INTO books (title, description, publication_year, author_id, borrowed, bo
 
   List<Map<String, dynamic>> listAuthors() {
     final results = _db.select(
-      'SELECT id, first_name, last_name, birth_date, nationality, biography FROM authors ORDER BY last_name ASC',
+      'SELECT id, first_name, last_name, email, birth_date, nationality, biography FROM authors ORDER BY last_name ASC',
     );
     return results.map(_rowToAuthor).toList();
   }
 
   Map<String, dynamic>? getAuthor(int id) {
     final results = _db.select(
-      'SELECT id, first_name, last_name, birth_date, nationality, biography FROM authors WHERE id = ?',
+      'SELECT id, first_name, last_name, email, birth_date, nationality, biography FROM authors WHERE id = ?',
       [id],
     );
     if (results.isEmpty) return null;
@@ -184,11 +193,12 @@ INSERT INTO books (title, description, publication_year, author_id, borrowed, bo
   int insertAuthor(Map<String, dynamic> data) {
     _db.execute(
       '''
-INSERT INTO authors (first_name, last_name, birth_date, nationality, biography)
-         VALUES (?, ?, ?, ?, ?)''',
+INSERT INTO authors (first_name, last_name, email, birth_date, nationality, biography)
+         VALUES (?, ?, ?, ?, ?, ?)''',
       [
         data['firstName'],
         data['lastName'],
+        data['email'],
         data['birthDate'],
         data['nationality'],
         data['biography'],
@@ -203,6 +213,7 @@ INSERT INTO authors (first_name, last_name, birth_date, nationality, biography)
 UPDATE authors
             SET first_name = ?,
                 last_name = ?,
+                email = ?,
                 birth_date = ?,
                 nationality = ?,
                 biography = ?
@@ -210,6 +221,7 @@ UPDATE authors
       [
         data['firstName'],
         data['lastName'],
+        data['email'],
         data['birthDate'],
         data['nationality'],
         data['biography'],
@@ -242,6 +254,7 @@ UPDATE authors
         b.image,
         a.first_name,
         a.last_name,
+        a.email,
         a.birth_date,
         a.nationality,
         a.biography
@@ -269,6 +282,7 @@ UPDATE authors
         b.image,
         a.first_name,
         a.last_name,
+        a.email,
         a.birth_date,
         a.nationality,
         a.biography
@@ -299,6 +313,7 @@ UPDATE authors
         b.image,
         a.first_name,
         a.last_name,
+        a.email,
         a.birth_date,
         a.nationality,
         a.biography
@@ -448,6 +463,7 @@ UPDATE books
       'id': row[idColumn] as int,
       'firstName': (row['first_name'] as String?) ?? '',
       'lastName': (row['last_name'] as String?) ?? '',
+      'email': row['email'] as String?,
       'birthDate': row['birth_date'] as String?,
       'nationality': row['nationality'] as String?,
       'biography': row['biography'] as String?,
@@ -474,6 +490,16 @@ UPDATE books
     // Ajouter la colonne 'borrower_id' si elle n'existe pas
     if (!columns.contains('borrower_id')) {
       _db.execute('ALTER TABLE books ADD COLUMN borrower_id INTEGER');
+    }
+  }
+
+  /// Migration incrémentale : ajoute les colonnes manquantes à la table authors
+  void _ensureAuthorColumns() {
+    final info = _db.select('PRAGMA table_info(authors)');
+    final columns = info.map((row) => row['name'] as String).toSet();
+
+    if (!columns.contains('email')) {
+      _db.execute('ALTER TABLE authors ADD COLUMN email TEXT');
     }
   }
 }

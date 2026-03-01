@@ -132,6 +132,7 @@ class ApiHandlers {
     final data = {
       'firstName': payload['firstName'] as String,
       'lastName': payload['lastName'] as String,
+      'email': payload['email'] as String?,
       'birthDate': payload['birthDate'] as String?,
       'nationality': payload['nationality'] as String?,
       'biography': payload['biography'] as String?,
@@ -154,6 +155,7 @@ class ApiHandlers {
     final data = {
       'firstName': payload['firstName'] as String,
       'lastName': payload['lastName'] as String,
+      'email': payload['email'] as String?,
       'birthDate': payload['birthDate'] as String?,
       'nationality': payload['nationality'] as String?,
       'biography': payload['biography'] as String?,
